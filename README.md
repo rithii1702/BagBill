@@ -1,293 +1,387 @@
 # BagBill — Digital Billing & Business Record System
 
-BagBill is a full-stack digital billing and business record management system specifically designed for small wholesale and trading businesses (such as gunny, jute, HDPE, and commercial bag suppliers). It replaces manual paper bill-book calculations and ledger entries with an intuitive, reliable, and centralized digital system.
+BagBill is a full-stack digital billing and business record management system designed for small wholesale and trading businesses such as bag suppliers and distributors.
+
+It replaces manual paper bill-book calculations and handwritten transaction records with a centralized digital system for billing, customer management, product management, payments, GST tracking, reporting, and business records.
 
 ---
 
-## 1. Project Overview
+## Project Overview
 
-In traditional wholesale and trading operations, day-to-day transactions are often recorded on handwritten carbon-copy bill books. BagBill bridges the gap between traditional manual practices and modern digital record-keeping. The application automates invoice calculation, tracks customer payments (Paid, Partial, Pending), maintains a synchronized party ledger, tracks product stock, and provides real-time sales and GST analytics—all backed by a persistent MongoDB database.
+Traditional wholesale businesses often depend on handwritten bills and physical calculation books to manage daily transactions. This can make calculations, payment tracking, customer ledgers, and historical records difficult to maintain.
 
----
+BagBill provides a digital workflow for:
 
-## 2. Problem Statement
-
-Handwritten billing and physical record-keeping introduce several common operational bottlenecks for trading enterprises:
-
-- **Manual Calculations**: Calculating line-item prices, percentage discounts, round-offs, and CGST/SGST/IGST by hand is prone to human mathematical errors.
-- **Difficult Transaction Tracking**: Reviewing transaction history requires manually flipping through stacks of physical paper bill books.
-- **Risk of Misplaced Records**: Paper slips, loose receipt memos, and carbon copies can tear, fade, or get misplaced over time.
-- **Difficult Outstanding/Payment Tracking**: Tracking credit balances and partial payments across multiple buyers is tedious and often causes delayed collections.
-- **No Centralized Reporting**: Business owners lack instant access to daily, monthly, or annual turnover figures, GST collection breakdowns, or stock levels.
-
----
-
-## 3. Key Features
-
-- **Create and Manage GST Invoices**: Issue comprehensive tax invoices with customer details, itemized goods, tax modes, and banking details.
-- **Smart Bill Calculator**: Real-time line-item calculation for quantity, unit rate, discount percentage, and GST rates, with automatic round-off adjustments.
-- **Multiple Products / Bag Types**: Support for diverse bag categories (Gunny, HDPE, PP, Jute, Plastic, and Custom) within a single bill.
-- **Automatic Calculations**: Dynamic computation of subtotals, item discounts, taxable values, CGST, SGST, IGST, and grand totals.
-- **Payment Tracking**: Record advance payments during bill generation and post-settlement payments (Cash, UPI, Bank Transfer, Cheque) with full payment receipt histories (Paid, Partial, Pending).
-- **Automatic Sequential Invoice Numbering**: Automated sequence generation with collision prevention and custom prefix/padding options.
-- **Bill Book with Search & Filters**: Search bills by invoice number, customer name, or item description; filter by date range or payment status; and interactively sort by Date, Customer, or Amount.
-- **Party Management & Party Ledger**: Customer directory maintaining contact details, GSTIN, billing addresses, transaction histories, and real-time outstanding balances.
-- **Product Catalogue**: Central catalog with default rates, GST tax rates, HSN/SAC codes, stock tracking, and low-stock warnings.
-- **Dashboard with Business KPIs**: Instant overview of Total Sales, Total Paid, Outstanding Dues, Total GST Collected, Bags Sold, and Average Bill Value.
-- **Reports & Sales Analytics**: Detailed turnover trends, monthly performance charts, payment status distributions, and exportable reports.
-- **GST Summary**: Clear separation of taxable revenue and tax totals (CGST, SGST, and IGST) for accounting compliance.
-- **Outstanding Payment Tracking**: Dedicated views to quickly identify overdue receivables and log payment receipts against pending invoices.
-- **PDF Invoice Generation**: Professional, print-ready PDF invoices styled with embedded TrueType fonts, Indian Rupee (₹) symbol support, and business profile snapshots.
-- **Print Invoices**: Native browser-friendly print layout with dedicated `@media print` styling.
-- **Business & Invoice Settings**: Customizable firm profile, GSTIN, PAN, bank account details, payment terms, and invoice formatting preferences.
-- **Persistent MongoDB Storage**: Persistent MongoDB storage for bills, parties, catalog products, and settings via Mongoose schemas.
-- **Duplicate-Bill Protection**: Rapid double-submission protection and unique invoice number constraints to prevent duplicate entries.
+- Creating GST invoices
+- Managing customers and party accounts
+- Managing bag products and rates
+- Tracking paid, partial, and pending payments
+- Maintaining party ledgers
+- Monitoring outstanding amounts
+- Generating PDF invoices
+- Tracking sales and GST
+- Viewing business reports and analytics
+- Maintaining business and invoice settings
 
 ---
 
-## 4. Tech Stack
+## Key Features
 
-### Frontend
-- **React 19**: Modern UI library utilizing functional components and hooks.
-- **TypeScript**: Static typing for data structures, API responses, and invoice models.
-- **Vite**: Next-generation frontend build tooling and dev server.
-- **Tailwind CSS**: Utility-first CSS styling tailored to a clean Kraft-paper design aesthetic.
-- **Recharts**: Data visualization library for analytics and dashboard charts.
-- **Lucide React**: Clean, lightweight iconography.
+### Digital Billing
+- Create GST tax invoices
+- Multiple bag/product items per invoice
+- Quantity and rate calculation
+- Discount calculation
+- CGST, SGST and IGST support
+- Round-off support
+- Payment status management
+- Partial payment and balance tracking
+- Automatic invoice numbering
+- Live invoice preview
 
-### Backend
-- **Node.js**: Asynchronous JavaScript runtime environment.
-- **Express.js**: REST API routing, request validation, and middleware architecture.
-- **MongoDB**: NoSQL document database for flexible, persistent business records.
-- **Mongoose**: Object Data Modeling (ODM) library for schema validation and aggregations.
+### Smart Bag Calculator
+- Calculate quantity × rate
+- Apply discounts
+- Calculate GST
+- Automatically calculate the final payable amount
+- Apply calculated values directly to the bill
 
-### Additional Tools & Libraries
-- **REST APIs**: Standard JSON HTTP communication between frontend and backend.
-- **jsPDF**: Client-side vector PDF generation with custom TrueType font support.
-- **Git & GitHub**: Version control and codebase management.
+### Bill Book
+- Centralized digital invoice ledger
+- Search by party, invoice number, or phone number
+- Filter by payment status
+- View invoice details
+- Edit and duplicate bills
+- Generate PDF invoices
+- Print invoices
+- Record payments
+
+### Party Management
+- Add and edit business parties
+- Store phone, address and GSTIN
+- View total purchases
+- Track collected payments
+- Track outstanding balances
+- View complete party transaction history
+- Party ledger based on recorded invoices
+
+### Product Management
+- Manage different bag types
+- Store default rates
+- GST rates
+- HSN/SAC codes
+- Stock quantities
+- Units
+- Product categories
+- Archive products
+- Add products directly to a bill
+
+### Dashboard
+- Today's sales
+- Today's collection
+- Today's outstanding amount
+- Number of bills
+- Bags sold
+- Total sales
+- Total paid
+- Outstanding payments
+- GST collected
+- Sales trends
+- Payment overview
+
+### Reports & Analytics
+- Sales over time
+- Payment status analysis
+- GST summary
+- Taxable turnover
+- Product-wise sales
+- Party-wise sales
+- Outstanding receivables
+- Bill value distribution
+- Top-selling products
+- Top parties
+- CSV and PDF export
+
+### Business Settings
+- Business profile
+- Proprietor details
+- Business address
+- GSTIN and PAN
+- Invoice settings
+- Bank and payment details
+- Tax settings
+- Terms and conditions
+- Invoice signature
+- Application appearance settings
 
 ---
 
-## 5. System Architecture
+## Screenshots
+
+### Dashboard
+
+![Dashboard](./Screenshot%202026-09-21%20164714.png)
+
+![Dashboard Analytics](./Screenshot%202026-09-21%20164731.png)
+
+---
+
+### Create Bill
+
+![Create Bill](./Screenshot%202026-09-21%20164747.png)
+
+![Taxation and Settlement](./Screenshot%202026-09-21%20164800.png)
+
+![Bill Summary and Invoice Preview](./Screenshot%202026-09-21%20164809.png)
+
+---
+
+### Bill Book
+
+![Digital Bill Book](./Screenshot%202026-09-21%20164822.png)
+
+---
+
+### Party Management
+
+![Party Management](./Screenshot%202026-09-21%20164900.png)
+
+---
+
+### Product Management
+
+![Product Management](./Screenshot%202026-09-21%20164911.png)
+
+---
+
+### Reports & Analytics
+
+![Business Reports](./Screenshot%202026-09-21%20164930.png)
+
+![GST and Business Analytics](./Screenshot%202026-09-21%20165003.png)
+
+---
+
+### Business Settings
+
+![Business Settings](./Screenshot%202026-09-21%20165023.png)
+
+---
+
+## System Architecture
 
 ```text
-React + TypeScript Frontend
+                ┌─────────────────────────┐
+                │      React Frontend     │
+                │   TypeScript + Vite     │
+                └────────────┬────────────┘
+                             │
+                             │ REST API
+                             ▼
+                ┌─────────────────────────┐
+                │    Node.js + Express    │
+                │       Backend API       │
+                └────────────┬────────────┘
+                             │
+                             │ Mongoose
+                             ▼
+                ┌─────────────────────────┐
+                │        MongoDB          │
+                │   Persistent Database   │
+                └─────────────────────────┘
+Technology Stack
+Frontend
+React
+TypeScript
+Vite
+Tailwind CSS
+React Router
+Recharts
+Backend
+Node.js
+Express.js
+Mongoose
+REST APIs
+CORS
+dotenv
+Database
+MongoDB
+Utilities
+jsPDF
+PDF generation
+CSV export
+Git & GitHub
+Main API Modules
+
+The backend is organized around the core business entities:
+
+/api/bills
+/api/parties
+/api/products
+/api/settings
+
+These modules support the main billing and business-record workflows.
+
+Core Billing Workflow
+Select / Create Party
         ↓
-Express.js REST API
+Select Bag Product
         ↓
-MongoDB Database
-```
+Enter Quantity & Rate
+        ↓
+Apply Discount
+        ↓
+Calculate GST
+        ↓
+Review Invoice
+        ↓
+Select Payment Status
+        ↓
+Save Bill
+        ↓
+Generate PDF / Print
+        ↓
+Bill Book & Party Ledger
+        ↓
+Dashboard & Reports
+Data Management
 
-- The **React Frontend** communicates with the Express backend through a centralized API service layer (`src/services/api.ts`).
-- The **Express REST API** (`backend/server.js`) validates incoming payloads, executes business logic, prevents race-condition duplicates, and updates product stock atomically upon bill save.
-- **MongoDB** stores all persistent collections (`bills`, `parties`, `products`, `settings`) ensuring zero reliance on ephemeral client storage.
+BagBill maintains a single business workflow across:
 
----
+Bills
+Parties
+Products
+Payments
+GST
+Settings
+Reports
 
-## 6. Main Modules
+This keeps invoice information, customer balances, payment records, and business analytics consistent across the application.
 
-- **Dashboard**: High-level executive view presenting key metrics (Turnover, Paid Amount, Receivables, Bags Sold), sales trends, top-selling bag types, and recent transactions.
-- **Create Bill**: Core invoice generation workflow equipped with party auto-completion, bag preset quick-fill buttons, an inline bag calculator, live stock warnings, and payment settlement options.
-- **Bill Book**: Searchable, filterable, and sortable historical archive of all generated invoices with action triggers to view, print, download PDF, duplicate, or record late payments.
-- **Parties**: Central customer database providing contact information, GSTINs, aggregate purchase metrics, outstanding balances, and individualized transaction ledgers.
-- **Products**: Product catalog managing bag types, unit rates, stock quantities, low-stock warnings, and HSN/SAC codes.
-- **Reports**: Analytical hub containing sales summaries, GST tax collection breakups, party-wise turnover distributions, and periodic performance trends.
-- **Settings**: Business configuration center managing enterprise identity (name, address, GSTIN, logo), banking/UPI details, default tax modes, invoice sequencing, and standard terms.
+Invoice Management
 
----
+Each invoice contains:
 
-## 7. Invoice Workflow
+Invoice number
+Bill date
+Party information
+GSTIN
+Product details
+Quantity
+Rate
+Discount
+HSN/SAC
+GST
+Grand total
+Payment status
+Amount paid
+Balance due
+Bank/payment information
+Terms and conditions
+Signature section
 
-```text
-Select Party → Add Products → Calculate Quantity × Rate → Apply Discount/GST → Record Payment → Generate Invoice → Save to MongoDB → View in Bill Book/Party Ledger/Reports
-```
+Invoices can be previewed, printed, and exported as PDF documents.
 
-1. **Select Party**: Choose an existing customer from the searchable database or create a new party inline.
-2. **Add Products**: Add line items by selecting standard catalog bags or entering custom bag specifications.
-3. **Calculate Quantity × Rate**: The calculator computes raw line-item totals based on entered quantities and prices.
-4. **Apply Discount / GST**: Item discounts are subtracted to determine taxable amount, followed by CGST/SGST or IGST tax calculations.
-5. **Record Payment**: Specify advance payment amounts received at billing time (Paid, Partial, or Pending).
-6. **Generate Invoice**: Automatic assignment of the next sequential invoice number with a snapshot of current company and bank details.
-7. **Save to MongoDB**: The bill document is persisted in the database, and product stock is atomically decremented.
-8. **View & Track**: The saved invoice immediately updates the Bill Book, adjusts the Party Ledger, recalculates Dashboard KPIs, and reflects in Reports.
-
----
-
-## 8. Data Persistence
-
-BagBill stores all primary business data directly in MongoDB via Mongoose models:
-- **Bills Collection**: Complete invoice records with line items, tax breakdowns, payments array, and immutable company profile snapshots.
-- **Parties Collection**: Customer records with contact details, GSTIN, addresses, and timestamps.
-- **Products Collection**: Catalog items with pricing, HSN codes, and stock quantities.
-- **Settings Collection**: Master business settings, invoice sequencing, and bank details.
-
-Browser storage (`localStorage`) is used exclusively as an initial client-side cache for instantaneous UI rendering on launch; all business operations mutate and verify against the MongoDB database first.
-
----
-
-## 9. Testing & Quality Assurance
-
-The application has undergone structured quality assurance and verification:
-
-- **End-to-End Integration Verification**: Automated test suites verified complete data flows across bill creation, payment recording, stock decrement, bill deletion, and stock restoration.
-- **Validation & Error Handling**: Verified server-side validation rejecting invalid payloads (missing party names, empty item lists) with clean HTTP 400 responses.
-- **Duplicate Bill Prevention**: Verified rapid duplicate submission suppression (within 5 seconds) and database-level unique index enforcement on invoice numbers.
-- **Frontend / Proxy Checks**: Verified Vite proxy forwarding `/api` calls directly to the Express backend without CORS issues.
-- **Production Build**: Clean production build compilation (`tsc -b && vite build`) with zero TypeScript errors.
-- **Linter Verification**: Codebase passes linter checks (`oxlint`) with zero errors.
-- **Persistence Verification**: Verified that all created bills, parties, payments, and settings persist accurately across page reloads and browser sessions.
-
----
-
-## 10. Project Structure
-
-```text
-bagbill/
-├── backend/
-│   ├── config/
-│   │   └── db.js
-│   ├── controllers/
-│   │   ├── billController.js
-│   │   ├── dashboardController.js
-│   │   ├── partyController.js
-│   │   ├── productController.js
-│   │   └── settingsController.js
-│   ├── middleware/
-│   │   └── errorHandler.js
-│   ├── models/
-│   │   ├── Bill.js
-│   │   ├── Party.js
-│   │   ├── Product.js
-│   │   └── Settings.js
-│   ├── routes/
-│   │   ├── bills.js
-│   │   ├── dashboard.js
-│   │   ├── parties.js
-│   │   ├── products.js
-│   │   └── settings.js
-│   ├── .env.example
-│   ├── .gitignore
-│   ├── package.json
-│   ├── seed.js
-│   └── server.js
-├── public/
-│   ├── favicon.svg
-│   └── icons.svg
-├── src/
-│   ├── assets/
-│   ├── components/
-│   │   ├── calculator/
-│   │   ├── common/
-│   │   ├── invoice/
-│   │   └── layout/
-│   ├── context/
-│   │   └── BagBillContext.tsx
-│   ├── data/
-│   │   └── seedData.ts
-│   ├── pages/
-│   │   ├── BillBook.tsx
-│   │   ├── CreateBill.tsx
-│   │   ├── Dashboard.tsx
-│   │   ├── PartiesPage.tsx
-│   │   ├── ProductsPage.tsx
-│   │   ├── ReportsPage.tsx
-│   │   └── SettingsPage.tsx
-│   ├── services/
-│   │   └── api.ts
-│   ├── types/
-│   │   └── index.ts
-│   └── utils/
-│       ├── analytics.ts
-│       ├── formatters.ts
-│       ├── numberToWords.ts
-│       ├── pdfFonts.ts
-│       └── pdfGenerator.ts
-├── .env.example
-├── .gitignore
-├── .oxlintrc.json
-├── index.html
-├── package.json
-├── README.md
-├── tsconfig.app.json
-├── tsconfig.json
-├── tsconfig.node.json
-└── vite.config.ts
-```
-
----
-
-## 11. Local Setup
-
-### Prerequisites
-- **Node.js** (v18 or higher recommended)
-- **npm** (v9 or higher)
-- **MongoDB** (v6 or higher running locally or a MongoDB Atlas URI)
-
-### 1. Clone the Repository
-```bash
-git clone <repository-url>
-cd bagbill
-```
-
-### 2. Frontend Dependencies Installation
-```bash
+Getting Started
+1. Clone the repository
+git clone https://github.com/rithii1702/BagBill.git
+cd BagBill
+2. Install frontend dependencies
 npm install
-```
-
-### 3. Backend Setup & Configuration
-Open a terminal and navigate to the `backend` folder:
-```bash
+3. Configure the backend
 cd backend
 npm install
-```
 
-Create your backend environment configuration file:
-```bash
-cp .env.example .env
-```
-*(On Windows PowerShell, run: `Copy-Item .env.example .env`)*
+Create the backend environment file from the provided example:
 
-Verify that the local MongoDB daemon is running, then start the backend API:
-```bash
-npm start
-```
-*(For development with auto-restart, run: `npm run dev`)*
+.env.example
 
-The backend server will start on `http://localhost:5000` and automatically connect to MongoDB.
+Configure the required MongoDB connection and server settings in .env.
 
-### 4. Start the Frontend
-In a separate terminal, return to the project root and run:
-```bash
+4. Start the backend
 npm run dev
-```
+5. Start the frontend
 
-The frontend application will start on `http://localhost:5173` with the Vite proxy automatically routing `/api` requests to port 5000.
+Open another terminal in the project root:
 
----
+npm run dev
 
-## 12. Environment Variables
+The application can then be opened using the local Vite development URL shown in the terminal.
 
-Sensitive configuration values and database credentials must be managed using `.env` files and should never be committed to version control. Reference [`.env.example`](file:///.env.example) and [`backend/.env.example`](file:///backend/.env.example) as configuration templates:
+Project Structure
+BagBill/
+│
+├── backend/
+│   ├── controllers/
+│   ├── models/
+│   ├── routes/
+│   ├── config/
+│   └── server.js
+│
+├── public/
+│
+├── src/
+│   ├── components/
+│   ├── pages/
+│   ├── utils/
+│   └── ...
+│
+├── .env.example
+├── package.json
+├── vite.config.ts
+├── tsconfig.json
+└── README.md
+Business Impact
 
-| Variable | Description | Default Value |
-| :--- | :--- | :--- |
-| `PORT` | Port number for the Express backend API server | `5000` |
-| `MONGODB_URI` | MongoDB connection URI | `mongodb://127.0.0.1:27017/bagbill` |
-| `CLIENT_URL` | Allowed frontend client origin for CORS policies | `http://localhost:5173` |
-| `NODE_ENV` | Application runtime environment (`development` or `production`) | `production` |
+BagBill is designed to help wholesale businesses move from manual record keeping to a structured digital workflow.
 
----
+The system helps reduce:
 
-## 13. Future Enhancements
+Manual calculation errors
+Duplicate invoice records
+Lost paper records
+Payment tracking difficulties
+Repeated customer data entry
+Difficulties in finding historical bills
 
-- **Cloud Deployment**: Containerization with Docker and deployment onto scalable cloud platforms (e.g., AWS, Render, Vercel).
-- **Authentication & Role-Based Access**: Multi-user support with owner, accountant, and sales representative access tiers.
-- **Automated Backups**: Scheduled automated MongoDB database dumps to secure cloud storage.
-- **Advanced Inventory Management**: Purchase order tracking, supplier management, and batch number tracking.
-- **Online Invoice Sharing**: Direct invoice dispatch to buyers via WhatsApp Business API and email.
+It provides a centralized way to manage daily billing and business records.
 
----
+Future Enhancements
 
-## 14. Project Purpose
+Potential future improvements include:
 
-BagBill was developed to demonstrate a practical full-stack business application that integrates modern frontend engineering, REST API architecture, database persistence, billing logic, and business analytics to solve real-world commerce challenges.
+User authentication and role-based access
+Cloud deployment
+Automated invoice sharing through WhatsApp/email
+Advanced inventory management
+Automated payment reminders
+Multi-business support
+Online backup and synchronization
+Mobile-friendly PWA support
+Project Status
+
+BagBill is an actively developed full-stack digital billing and business record management project.
+
+Current modules include:
+
+Dashboard
+Digital Bill Book
+Create Bill
+Smart Bag Calculator
+Party Management
+Product Management
+Reports & Analytics
+GST Tracking
+PDF Invoice Generation
+Business Settings
+Node.js / Express Backend
+MongoDB Database Integration
+Author
+
+B. Rithika Shree
+
+BE — Artificial Intelligence & Machine Learning
+
+RajaRajeswari College of Engineering
+
+
