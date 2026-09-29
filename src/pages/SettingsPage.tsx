@@ -353,7 +353,7 @@ export const SettingsPage: React.FC = () => {
                     required
                     value={formData.businessName}
                     onChange={e => handleChange('businessName', e.target.value)}
-                    placeholder="Sri Lakshmi Jute & Gunny Mart"
+                    placeholder="e.g. Sri Lakshmi Bag Mart"
                     className={`w-full px-3.5 py-2.5 rounded-xl bg-[#F7F3EA] border font-bold text-xs text-[#3B2921] outline-none ${
                       formErrors.businessName ? 'border-[#B94A48] focus:border-[#B94A48]' : 'border-[#E4D7C8] focus:border-[#8B5E3C]'
                     }`}
@@ -680,7 +680,7 @@ export const SettingsPage: React.FC = () => {
                     type="text"
                     value={formData.accountHolderName || ''}
                     onChange={e => handleChange('accountHolderName', e.target.value)}
-                    placeholder="Sri Lakshmi Jute & Gunny Mart"
+                    placeholder="e.g. Sri Lakshmi Bag Mart"
                     className="w-full px-3.5 py-2.5 rounded-xl bg-[#F7F3EA] border border-[#E4D7C8] text-xs text-[#3B2921] outline-none focus:border-[#8B5E3C]"
                   />
                 </div>

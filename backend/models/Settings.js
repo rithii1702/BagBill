@@ -3,33 +3,33 @@ import mongoose from 'mongoose';
 const settingsSchema = new mongoose.Schema(
   {
     // Business Profile (Flat root properties matching frontend BusinessSettings)
-    businessName: { type: String, required: true, default: 'Sri Lakshmi Jute & Gunny Mart' },
-    ownerName: { type: String, default: 'S. Shanmugam' },
-    tagline: { type: String, default: 'Wholesale & Retail Suppliers of All Kinds of Commercial Bags' },
-    logoText: { type: String, default: 'SLJ' },
+    businessName: { type: String, default: '' },
+    ownerName: { type: String, default: '' },
+    tagline: { type: String, default: '' },
+    logoText: { type: String, default: 'BB' },
     logoUrl: { type: String, default: '' },
-    address: { type: String, default: 'Shop No. 14, Commercial Market Yard, Opp. Old Cotton Market' },
-    city: { type: String, default: 'Salem' },
+    address: { type: String, default: '' },
+    city: { type: String, default: '' },
     state: { type: String, default: 'Tamil Nadu' },
-    pincode: { type: String, default: '636001' },
-    phone: { type: String, default: '+91 98427 51234' },
-    email: { type: String, default: 'sales@srilakshmijute.com' },
-    website: { type: String, default: 'www.srilakshmijute.com' },
-    gstin: { type: String, default: '33AABCS1429B1Z8' },
-    panNumber: { type: String, default: 'AABCS1429B' },
+    pincode: { type: String, default: '' },
+    phone: { type: String, default: '' },
+    email: { type: String, default: '' },
+    website: { type: String, default: '' },
+    gstin: { type: String, default: '' },
+    panNumber: { type: String, default: '' },
 
     // Bank Details
-    bankName: { type: String, default: 'State Bank of India' },
-    accountHolderName: { type: String, default: 'Sri Lakshmi Jute & Gunny Mart' },
-    bankAccountNumber: { type: String, default: '381920485910' },
-    bankIfsc: { type: String, default: 'SBIN0001254' },
-    bankBranch: { type: String, default: 'Salem Main Branch' },
-    upiId: { type: String, default: 'lakshmijute@sbi' },
+    bankName: { type: String, default: '' },
+    accountHolderName: { type: String, default: '' },
+    bankAccountNumber: { type: String, default: '' },
+    bankIfsc: { type: String, default: '' },
+    bankBranch: { type: String, default: '' },
+    upiId: { type: String, default: '' },
     showBankDetailsOnInvoice: { type: Boolean, default: true },
 
     // Invoice Sequencing
     invoicePrefix: { type: String, default: 'INV-' },
-    startingInvoiceNumber: { type: Number, default: 126 },
+    startingInvoiceNumber: { type: Number, default: 1 },
     invoiceNumberPadding: { type: Number, default: 5 },
 
     // Tax Settings
@@ -47,11 +47,11 @@ const settingsSchema = new mongoose.Schema(
     // Terms & Conditions & Signatory
     termsAndConditions: {
       type: mongoose.Schema.Types.Mixed,
-      default: '1. Goods once sold will not be taken back or exchanged.\n2. Interest @ 18% per annum will be charged if payment is not received within 15 days.\n3. Subject to Salem jurisdiction only.',
+      default: '1. Goods once sold will not be taken back or exchanged.\n2. Invoices are subject to terms agreed upon.',
     },
-    authorizedSignatoryName: { type: String, default: 'S. Shanmugam' },
-    authorizedSignatoryDesignation: { type: String, default: 'Proprietor' },
-    authorizedSignatoryText: { type: String, default: 'Proprietor / Authorized Signatory' },
+    authorizedSignatoryName: { type: String, default: '' },
+    authorizedSignatoryDesignation: { type: String, default: 'Authorized Signatory' },
+    authorizedSignatoryText: { type: String, default: 'Authorized Signatory' },
     showSignatureSection: { type: Boolean, default: true },
     showBusinessLogo: { type: Boolean, default: true },
     showHsnSac: { type: Boolean, default: true },

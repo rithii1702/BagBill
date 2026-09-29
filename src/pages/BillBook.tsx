@@ -16,7 +16,8 @@ import {
   ArrowUpDown,
   ArrowUp,
   ArrowDown,
-  IndianRupee
+  IndianRupee,
+  Sparkles
 } from 'lucide-react';
 import { useBagBill } from '../context/BagBillContext';
 import { formatINR, formatDate } from '../utils/formatters';
@@ -31,7 +32,7 @@ import api from '../services/api';
 export const BillBook: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { invoices, settings, deleteInvoice, duplicateInvoice, refreshFromBackend } = useBagBill();
+  const { invoices, settings, deleteInvoice, duplicateInvoice, refreshFromBackend, loadSampleData } = useBagBill();
 
   // Search & Filter states
   const [searchTerm, setSearchTerm] = useState('');
@@ -452,10 +453,41 @@ export const BillBook: React.FC = () => {
             <tbody className="divide-y divide-[#E4D7C8]">
               {sortedAndFilteredInvoices.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="text-center py-12 text-[#8B5E3C]">
-                    <Receipt size={32} className="opacity-30 mx-auto mb-2" />
-                    <p className="font-bold">No bills found</p>
-                    <p className="text-[11px] opacity-80">Try adjusting your search or create a new bill.</p>
+                  <td colSpan={7} className="text-center py-16 px-4">
+                    {invoices.length === 0 ? (
+                      <div className="max-w-md mx-auto space-y-3">
+                        <div className="w-14 h-14 mx-auto rounded-2xl bg-[#3B2921]/10 flex items-center justify-center text-[#3B2921]">
+                          <BookOpenText size={28} />
+                        </div>
+                        <h3 className="text-base font-black text-[#3B2921]">Welcome to BagBill</h3>
+                        <p className="text-xs text-[#8B5E3C] max-w-sm mx-auto">
+                          Create your first bill to start managing your billing records digitally.
+                        </p>
+                        <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                          <button
+                            onClick={() => navigate('/create-bill')}
+                            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#3B2921] hover:bg-[#4E372C] text-[#FFFDF8] font-bold text-xs shadow-sm transition-all active:scale-95"
+                          >
+                            <Plus size={14} className="text-[#C99563]" />
+                            <span>Create New Bill</span>
+                          </button>
+                          <button
+                            onClick={() => loadSampleData()}
+                            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#FFFDF8] hover:bg-[#F7F3EA] text-[#3B2921] border border-[#E4D7C8] font-bold text-xs transition-all active:scale-95"
+                            title="Load demo bills to test dashboard and reports"
+                          >
+                            <Sparkles size={14} className="text-[#C99563]" />
+                            <span>Try Sample Invoices</span>
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div>
+                        <Receipt size={32} className="opacity-30 mx-auto mb-2 text-[#8B5E3C]" />
+                        <p className="font-bold text-[#3B2921]">No bills match your filters</p>
+                        <p className="text-[11px] text-[#8B5E3C] opacity-80">Try adjusting your search criteria or resetting filters.</p>
+                      </div>
+                    )}
                   </td>
                 </tr>
               ) : (

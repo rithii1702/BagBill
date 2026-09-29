@@ -1,6 +1,8 @@
 import { Invoice, Party, Product, BusinessSettings } from '../types';
 
-const API_BASE = '/api';
+const API_BASE = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_URL)
+  ? `${import.meta.env.VITE_API_URL.replace(/\/$/, '')}/api`
+  : '/api';
 
 async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const url = `${API_BASE}${endpoint}`;
@@ -23,15 +25,22 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
 
     return result.data !== undefined ? result.data : result;
   } catch (err: any) {
-    // If proxied fetch failed (e.g. during offline or local transition), try direct localhost:5000 fallback
-    if (url.startsWith('/api') && (err.message?.includes('Failed to fetch') || err.message?.includes('NetworkError'))) {
+    // Only in local development mode: fallback to localhost:5000 if vite proxy was offline
+    if (
+      import.meta.env.DEV &&
+      url.startsWith('/api') &&
+      (err.message?.includes('Failed to fetch') || err.message?.includes('NetworkError'))
+    ) {
       const fallbackUrl = `http://localhost:5000${url}`;
-      const fbRes = await fetch(fallbackUrl, { ...options, headers });
-      const fbResult = await fbRes.json();
-      if (!fbRes.ok) {
-        throw new Error(fbResult.message || `Request failed with status ${fbRes.status}`);
+      try {
+        const fbRes = await fetch(fallbackUrl, { ...options, headers });
+        const fbResult = await fbRes.json();
+        if (fbRes.ok) {
+          return fbResult.data !== undefined ? fbResult.data : fbResult;
+        }
+      } catch {
+        // Fallback also failed, rethrow original error
       }
-      return fbResult.data !== undefined ? fbResult.data : fbResult;
     }
     throw err;
   }

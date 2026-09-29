@@ -47,7 +47,7 @@ export const getNextInvoiceNumber = async (req, res, next) => {
     }
 
     const prefix = settings.invoicePrefix || settings.invoiceSettings?.prefix || 'INV-';
-    const nextInvoiceNumber = settings.startingInvoiceNumber || settings.invoiceSettings?.nextInvoiceNumber || 126;
+    const nextInvoiceNumber = settings.startingInvoiceNumber || settings.invoiceSettings?.nextInvoiceNumber || 1;
     const numberPadding = settings.invoiceNumberPadding || settings.invoiceSettings?.numberPadding || 5;
 
     const formatted = formatInvoiceNumber(prefix, nextInvoiceNumber, numberPadding);
@@ -163,7 +163,7 @@ export const createBill = async (req, res, next) => {
     }
 
     const prefix = settings.invoicePrefix || settings.invoiceSettings?.prefix || 'INV-';
-    const currentSeq = settings.startingInvoiceNumber || settings.invoiceSettings?.nextInvoiceNumber || 126;
+    const currentSeq = settings.startingInvoiceNumber || settings.invoiceSettings?.nextInvoiceNumber || 1;
     const padding = settings.invoiceNumberPadding || settings.invoiceSettings?.numberPadding || 5;
 
     // 1. Check for rapid duplicate submission (within 5 seconds with identical items)

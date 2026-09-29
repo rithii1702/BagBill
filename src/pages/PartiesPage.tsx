@@ -18,7 +18,8 @@ import {
   ArchiveRestore,
   AlertTriangle,
   Building2,
-  ShieldAlert
+  ShieldAlert,
+  Sparkles
 } from 'lucide-react';
 import { useBagBill } from '../context/BagBillContext';
 import { Party, Invoice } from '../types';
@@ -39,7 +40,7 @@ interface PartyComputedStats {
 
 export const PartiesPage: React.FC = () => {
   const navigate = useNavigate();
-  const { parties, invoices, settings, addParty, updateParty, deleteParty, archiveParty } = useBagBill();
+  const { parties, invoices, settings, addParty, updateParty, deleteParty, archiveParty, loadSampleData } = useBagBill();
 
   // Search & Filter State
   const [searchTerm, setSearchTerm] = useState('');
@@ -446,13 +447,23 @@ export const PartiesPage: React.FC = () => {
               : 'Add your first customer to start managing business transactions.'}
           </p>
           {!searchTerm ? (
-            <button
-              onClick={handleOpenAddModal}
-              className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-[#3B2921] hover:bg-[#4E372C] text-[#FFFDF8] font-bold text-xs shadow-sm transition-all"
-            >
-              <Plus size={15} className="text-[#C99563]" />
-              <span>+ Add New Party</span>
-            </button>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <button
+                onClick={handleOpenAddModal}
+                className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-[#3B2921] hover:bg-[#4E372C] text-[#FFFDF8] font-bold text-xs shadow-sm transition-all"
+              >
+                <Plus size={15} className="text-[#C99563]" />
+                <span>+ Add New Party</span>
+              </button>
+              <button
+                onClick={() => loadSampleData()}
+                className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-[#FFFDF8] hover:bg-[#F7F3EA] text-[#3B2921] border border-[#E4D7C8] font-bold text-xs transition-all"
+                title="Load sample parties to test ledger features"
+              >
+                <Sparkles size={14} className="text-[#C99563]" />
+                <span>Try Sample Parties</span>
+              </button>
+            </div>
           ) : (
             <button
               onClick={() => setSearchTerm('')}

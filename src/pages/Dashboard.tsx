@@ -59,7 +59,7 @@ import api from '../services/api';
 
 export const Dashboard: React.FC = () => {
   const navigate = useNavigate();
-  const { invoices, parties, settings, refreshFromBackend } = useBagBill();
+  const { invoices, parties, settings, refreshFromBackend, loadSampleData } = useBagBill();
 
   // --- FILTER STATES ---
   const [filterPeriod, setFilterPeriod] = useState<DateFilterPeriod>('month');
@@ -342,17 +342,27 @@ export const Dashboard: React.FC = () => {
           <div className="w-16 h-16 rounded-2xl bg-[#C99563]/20 border border-[#C99563]/30 text-[#8B5E3C] flex items-center justify-center mx-auto mb-4">
             <ShoppingBag size={32} />
           </div>
-          <h2 className="text-2xl font-black text-[#3B2921] tracking-tight">No Transactions Yet</h2>
+          <h2 className="text-2xl font-black text-[#3B2921] tracking-tight">Welcome to BagBill</h2>
           <p className="text-sm text-[#8B5E3C] mt-2 mb-6 max-w-md mx-auto">
-            Welcome to {settings.businessName || 'BagBill'}. Create your first GST invoice to start tracking bag sales, collections, customer ledgers, and inventory.
+            Create your first bill to start managing your billing records digitally, or try sample data to explore features.
           </p>
-          <button
-            onClick={() => navigate('/create-bill')}
-            className="px-6 py-3 rounded-xl bg-[#3B2921] hover:bg-[#4E372C] text-[#FFFDF8] font-bold text-sm inline-flex items-center gap-2 shadow-sm transition-all active:scale-95"
-          >
-            <Plus size={18} className="text-[#C99563]" />
-            <span>Create Your First Bill</span>
-          </button>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <button
+              onClick={() => navigate('/create-bill')}
+              className="px-6 py-3 rounded-xl bg-[#3B2921] hover:bg-[#4E372C] text-[#FFFDF8] font-bold text-sm inline-flex items-center gap-2 shadow-sm transition-all active:scale-95"
+            >
+              <Plus size={18} className="text-[#C99563]" />
+              <span>Create New Bill</span>
+            </button>
+            <button
+              onClick={() => loadSampleData()}
+              className="px-5 py-3 rounded-xl bg-[#FFFDF8] hover:bg-[#F7F3EA] text-[#3B2921] border border-[#E4D7C8] font-bold text-sm inline-flex items-center gap-2 transition-all active:scale-95"
+              title="Load demo bills to test the dashboard, sorting, and reporting features"
+            >
+              <Sparkles size={16} className="text-[#C99563]" />
+              <span>Try Sample Data</span>
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -375,7 +385,7 @@ export const Dashboard: React.FC = () => {
             </span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-black text-[#3B2921] tracking-tight mt-1">
-            {settings.businessName || 'Sri Lakshmi Jute & Gunny Mart'}
+            {settings.businessName || 'BagBill Digital Billing'}
           </h2>
           <p className="text-xs sm:text-sm text-[#8B5E3C] font-medium max-w-xl mt-0.5">
             {settings.tagline || 'Real-time billing, collections, receivable ageing, and customer ledgers.'}

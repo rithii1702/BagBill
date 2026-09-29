@@ -8,10 +8,12 @@ import {
   TransferToBillPayload,
 } from '../types';
 import { 
+  defaultBusinessSettings,
   initialBusinessSettings, 
-  initialParties, 
   initialProducts, 
-  initialInvoices 
+  sampleParties,
+  sampleInvoices,
+  sampleBusinessSettings,
 } from '../data/seedData';
 import api from '../services/api';
 
@@ -57,6 +59,8 @@ interface BagBillContextType {
   showToast: (message: string, type?: 'success' | 'info' | 'warning' | 'error') => void;
   dismissToast: (id: string) => void;
   refreshFromBackend: () => Promise<void>;
+  loadSampleData: () => void;
+  clearAllData: () => void;
 }
 
 const BagBillContext = createContext<BagBillContextType | undefined>(undefined);
@@ -194,13 +198,23 @@ export function sanitizeAndDeduplicateInvoices(rawInvoices: Invoice[]): { cleane
 export const BagBillProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // Initialize from localStorage cache for zero-latency initial render
+  // Initialize from localStorage cache for zero-latency initial render (defaults to clean empty state)
   const [invoices, setInvoices] = useState<Invoice[]>(() => {
     const saved = localStorage.getItem(STORAGE_KEYS.INVOICES);
-    let list: Invoice[] = initialInvoices;
+    let list: Invoice[] = [];
     if (saved) {
       try {
-        list = JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          // If cached invoices are solely the preloaded legacy mock IDs (inv-119 to inv-125),
+          // discard them for clean production start unless user explicitly loads sample data.
+          const isLegacyMock = parsed.length > 0 && parsed.every(inv => 
+            typeof inv.id === 'string' && /^inv-1(19|20|21|22|23|24|25)$/.test(inv.id)
+          );
+          if (!isLegacyMock) {
+            list = parsed;
+          }
+        }
       } catch (e) {
         console.error('Failed to parse invoices from storage', e);
       }
@@ -211,10 +225,18 @@ export const BagBillProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const [parties, setParties] = useState<Party[]>(() => {
     const saved = localStorage.getItem(STORAGE_KEYS.PARTIES);
-    let rawParties: Party[] = initialParties;
+    let rawParties: Party[] = [];
     if (saved) {
       try {
-        rawParties = JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          const isLegacyMock = parsed.length > 0 && parsed.every(p => 
+            typeof p.id === 'string' && /^party-[1-6]$/.test(p.id)
+          );
+          if (!isLegacyMock) {
+            rawParties = parsed;
+          }
+        }
       } catch (e) {
         console.error('Failed to parse parties from storage', e);
       }
@@ -238,12 +260,19 @@ export const BagBillProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const saved = localStorage.getItem(STORAGE_KEYS.SETTINGS);
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        if (parsed && typeof parsed === 'object') {
+          // If saved settings match the old hardcoded sample business with 126 starting number, reset to clean defaults
+          if (parsed.businessName === 'Sri Lakshmi Jute & Gunny Mart' && parsed.startingInvoiceNumber === 126) {
+            return defaultBusinessSettings;
+          }
+          return { ...defaultBusinessSettings, ...parsed };
+        }
       } catch (e) {
         console.error('Failed to parse settings from storage', e);
       }
     }
-    return initialBusinessSettings;
+    return defaultBusinessSettings;
   });
 
   const [transferBuffer, setTransferBuffer] = useState<TransferToBillPayload | null>(null);
@@ -272,12 +301,12 @@ export const BagBillProvider: React.FC<{ children: React.ReactNode }> = ({ child
         }),
       ]);
 
-      if (backendSettings) {
+      if (backendSettings && backendSettings.businessName !== undefined) {
         setSettings(prev => ({ ...prev, ...backendSettings }));
         localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(backendSettings));
       }
 
-      if (backendParties && Array.isArray(backendParties) && backendParties.length > 0) {
+      if (backendParties && Array.isArray(backendParties)) {
         setParties(backendParties);
         localStorage.setItem(STORAGE_KEYS.PARTIES, JSON.stringify(backendParties));
       }
@@ -287,7 +316,7 @@ export const BagBillProvider: React.FC<{ children: React.ReactNode }> = ({ child
         localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(backendProducts));
       }
 
-      if (backendBills && Array.isArray(backendBills) && backendBills.length > 0) {
+      if (backendBills && Array.isArray(backendBills)) {
         const { cleaned } = sanitizeAndDeduplicateInvoices(backendBills);
         setInvoices(cleaned);
         localStorage.setItem(STORAGE_KEYS.INVOICES, JSON.stringify(cleaned));
@@ -321,11 +350,11 @@ export const BagBillProvider: React.FC<{ children: React.ReactNode }> = ({ child
     localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
   }, [settings]);
 
-  // Compute next invoice number
+  // Compute next invoice number starting sequentially from settings startingInvoiceNumber (default: 1)
   const nextInvoiceNumber = React.useMemo(() => {
     const prefix = settings.invoicePrefix || 'INV-';
     const padding = settings.invoiceNumberPadding || 5;
-    let highestNum = (settings.startingInvoiceNumber || 100) - 1;
+    let highestNum = (settings.startingInvoiceNumber || 1) - 1;
     invoices.forEach(inv => {
       if (inv.invoiceNumber) {
         const match = inv.invoiceNumber.match(/(\d+)$/);
@@ -804,6 +833,24 @@ export const BagBillProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setTransferBuffer(null);
   };
 
+  const loadSampleData = useCallback(() => {
+    setInvoices(sampleInvoices);
+    setParties(sampleParties);
+    setSettings(sampleBusinessSettings);
+    localStorage.setItem(STORAGE_KEYS.INVOICES, JSON.stringify(sampleInvoices));
+    localStorage.setItem(STORAGE_KEYS.PARTIES, JSON.stringify(sampleParties));
+    localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(sampleBusinessSettings));
+    showToast('Sample demo invoices and customer accounts loaded.', 'info');
+  }, []);
+
+  const clearAllData = useCallback(() => {
+    setInvoices([]);
+    setParties([]);
+    localStorage.removeItem(STORAGE_KEYS.INVOICES);
+    localStorage.removeItem(STORAGE_KEYS.PARTIES);
+    showToast('Cleaned all transactions and customer records.', 'success');
+  }, []);
+
   return (
     <BagBillContext.Provider
       value={{
@@ -836,6 +883,8 @@ export const BagBillProvider: React.FC<{ children: React.ReactNode }> = ({ child
         showToast,
         dismissToast,
         refreshFromBackend,
+        loadSampleData,
+        clearAllData,
       }}
     >
       {children}

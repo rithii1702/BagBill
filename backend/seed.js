@@ -563,39 +563,51 @@ export const seedDatabaseIfNeeded = async () => {
     // 1. Seed Settings if none exists
     const settingsCount = await Settings.countDocuments();
     if (settingsCount === 0) {
-      await Settings.create(seedInitialData.settings);
-      console.log('[Seed] Settings collection seeded with initial configuration');
+      await Settings.create({
+        businessName: '',
+        ownerName: '',
+        tagline: '',
+        logoText: 'BB',
+        startingInvoiceNumber: 1,
+        invoicePrefix: 'INV-',
+        invoiceNumberPadding: 5,
+        defaultTaxMode: 'CGST_SGST',
+        defaultGstRate: 5,
+        enableCgstSgst: true,
+        enableIgst: true,
+        defaultRcm: false,
+        defaultPaymentStatus: 'Pending',
+        activePaymentModes: ['Cash', 'UPI', 'Bank Transfer', 'Cheque'],
+        defaultDueDays: 15,
+        currency: 'INR (₹)',
+        dateFormat: 'DD MMM YYYY',
+        defaultUnit: 'Bag',
+      });
+      console.log('[Seed] Settings collection initialized with clean defaults');
     } else {
       // Ensure startingInvoiceNumber and prefix exist
       const existingSettings = await Settings.findOne();
       if (!existingSettings.startingInvoiceNumber) {
-        existingSettings.startingInvoiceNumber = 126;
+        existingSettings.startingInvoiceNumber = 1;
         existingSettings.invoicePrefix = 'INV-';
         await existingSettings.save();
       }
     }
 
-    // 2. Seed Parties if none exists
-    const partiesCount = await Party.countDocuments();
-    if (partiesCount === 0) {
-      await Party.insertMany(seedInitialData.parties);
-      console.log(`[Seed] Seeded ${seedInitialData.parties.length} initial wholesale parties`);
-    }
-
-    // 3. Seed Products if none exists
+    // 2. Seed catalog Products if none exists
     const productsCount = await Product.countDocuments();
     if (productsCount === 0) {
-      await Product.insertMany(seedInitialData.products);
-      console.log(`[Seed] Seeded ${seedInitialData.products.length} initial wholesale bag products`);
+      const cleanProducts = seedInitialData.products.map(p => ({
+        ...p,
+        stock: 0,
+      }));
+      await Product.insertMany(cleanProducts);
+      console.log(`[Seed] Initialized ${cleanProducts.length} bag products in catalog`);
     }
 
-    // 4. Seed Bills if none exists
-    const billsCount = await Bill.countDocuments();
-    if (billsCount === 0) {
-      await Bill.insertMany(seedInitialData.bills);
-      console.log(`[Seed] Seeded ${seedInitialData.bills.length} initial historical invoices`);
-    }
+    // 3. Parties and Bills start clean - no automatic mock data is injected.
+    // Genuine user-created bills and parties will be saved to MongoDB.
   } catch (err) {
-    console.error('[Seed] Error seeding database:', err.message);
+    console.error('[Seed] Error initializing database:', err.message);
   }
 };

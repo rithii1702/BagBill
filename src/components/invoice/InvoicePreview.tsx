@@ -71,25 +71,31 @@ export const InvoicePreview: React.FC<InvoicePreviewProps> = ({
           )}
           <div>
             <h2 className="text-lg md:text-xl font-black text-[#3B2921] uppercase tracking-tight leading-tight">
-              {business.businessName}
+              {business.businessName || 'Your Business Name'}
             </h2>
             {business.tagline && (
               <p className="text-xs text-[#8B5E3C] font-semibold mt-0.5">
                 {business.tagline}
               </p>
             )}
-            <p className="text-xs text-[#2C211B]/80 mt-1 leading-relaxed">
-              {business.address}, {business.city}, {business.state} - {business.pincode}
-            </p>
-            <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-[#2C211B]/90 mt-1">
-              <span><strong>Phone:</strong> {business.phone}</span>
-              <span><strong>Email:</strong> {business.email}</span>
-              {business.website && <span><strong>Web:</strong> {business.website}</span>}
-            </div>
-            <div className="flex flex-wrap gap-x-4 text-xs font-bold text-[#3B2921] mt-1 bg-[#F7F3EA] px-2 py-0.5 rounded-md inline-block border border-[#E4D7C8]">
-              <span>GSTIN: <span className="font-mono">{business.gstin}</span></span>
-              {business.panNumber && <span>PAN: <span className="font-mono">{business.panNumber}</span></span>}
-            </div>
+            {(business.address || business.city || business.state || business.pincode) && (
+              <p className="text-xs text-[#2C211B]/80 mt-1 leading-relaxed">
+                {[business.address, business.city, business.state ? (business.pincode ? `${business.state} - ${business.pincode}` : business.state) : business.pincode].filter(Boolean).join(', ')}
+              </p>
+            )}
+            {(business.phone || business.email || business.website) && (
+              <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-[#2C211B]/90 mt-1">
+                {business.phone && <span><strong>Phone:</strong> {business.phone}</span>}
+                {business.email && <span><strong>Email:</strong> {business.email}</span>}
+                {business.website && <span><strong>Web:</strong> {business.website}</span>}
+              </div>
+            )}
+            {(business.gstin || business.panNumber) && (
+              <div className="flex flex-wrap gap-x-4 text-xs font-bold text-[#3B2921] mt-1 bg-[#F7F3EA] px-2 py-0.5 rounded-md inline-block border border-[#E4D7C8]">
+                {business.gstin && <span>GSTIN: <span className="font-mono">{business.gstin}</span></span>}
+                {business.panNumber && <span>PAN: <span className="font-mono">{business.panNumber}</span></span>}
+              </div>
+            )}
           </div>
         </div>
 

@@ -164,24 +164,31 @@ export const CreateBill: React.FC = () => {
     if (editInvoice?.items && editInvoice.items.length > 0) {
       return editInvoice.items;
     }
+    const activeProductsList = products.filter(p => !p.isArchived);
+    const defaultBag = activeProductsList[0] || products[0];
     return [
       {
         id: 'item-1',
-        bagType: 'Gunny Bag',
-        description: 'Standard Gunny Bag 50kg capacity',
-        hsnCode: '630510',
-        quantity: 500,
-        unit: 'Bags',
-        pricePerBag: 28.00,
+        productId: defaultBag?.id,
+        productName: defaultBag?.name || 'Gunny Bag',
+        bagType: defaultBag?.bagType || 'Gunny Bag',
+        category: defaultBag?.category,
+        description: '',
+        hsnCode: defaultBag?.hsnCode || '630510',
+        quantity: 0,
+        unit: defaultBag?.unit || 'Bag',
+        pricePerBag: defaultBag?.defaultPrice ?? defaultBag?.rate ?? 0,
+        rate: defaultBag?.defaultPrice ?? defaultBag?.rate ?? 0,
         discountPercent: 0,
-        gstRate: 5,
-        amount: 14000,
+        discount: 0,
+        gstRate: defaultBag?.gstRate || 5,
+        amount: 0,
         discountAmount: 0,
-        taxableAmount: 14000,
-        cgstAmount: 350,
-        sgstAmount: 350,
+        taxableAmount: 0,
+        cgstAmount: 0,
+        sgstAmount: 0,
         igstAmount: 0,
-        totalAmount: 14700,
+        totalAmount: 0,
       }
     ];
   });
@@ -193,10 +200,10 @@ export const CreateBill: React.FC = () => {
   useEffect(() => {
     if (location.state?.preselectedProduct) {
       const prod = location.state.preselectedProduct as Product;
-      const rate = prod.defaultPrice ?? prod.rate ?? 28;
-      const qty = 500;
-      const raw = qty * rate;
-      const gst = (raw * prod.gstRate) / 100;
+      const rate = prod.defaultPrice ?? prod.rate ?? 0;
+      const qty = 0;
+      const raw = 0;
+      const gst = 0;
       const initialItem: BillItem = {
         id: `item-${Date.now()}`,
         productId: prod.id,
@@ -479,10 +486,10 @@ export const CreateBill: React.FC = () => {
       description: 'Standard Gunny Bag 50kg capacity',
     };
 
-    const qty = 500;
-    const rate = defaultBag.defaultPrice ?? defaultBag.rate ?? 28.0;
-    const raw = qty * rate;
-    const gst = (raw * defaultBag.gstRate) / 100;
+    const qty = 0;
+    const rate = defaultBag.defaultPrice ?? defaultBag.rate ?? 0;
+    const raw = 0;
+    const gst = 0;
 
     const newItem: BillItem = {
       id: `item-${Date.now()}`,
@@ -490,7 +497,7 @@ export const CreateBill: React.FC = () => {
       productName: defaultBag.name,
       bagType: defaultBag.bagType,
       category: defaultBag.category,
-      description: defaultBag.description || `${defaultBag.name} batch`,
+      description: defaultBag.description || '',
       hsnCode: defaultBag.hsnCode || '630510',
       hsnSac: defaultBag.hsnCode || '630510',
       quantity: qty,
@@ -499,14 +506,14 @@ export const CreateBill: React.FC = () => {
       rate: rate,
       discountPercent: 0,
       discount: 0,
-      gstRate: defaultBag.gstRate,
+      gstRate: defaultBag.gstRate || 5,
       amount: raw,
       discountAmount: 0,
       taxableAmount: raw,
-      cgstAmount: gst / 2,
-      sgstAmount: gst / 2,
-      igstAmount: gst,
-      totalAmount: raw + gst,
+      cgstAmount: 0,
+      sgstAmount: 0,
+      igstAmount: 0,
+      totalAmount: 0,
     };
 
     setItems(prev => [...prev, newItem]);
@@ -679,7 +686,7 @@ export const CreateBill: React.FC = () => {
       invoiceNumber: invoiceNumber || nextInvoiceNumber,
       date,
       dueDate: paymentStatus === 'Paid' ? date : dueDate,
-      partyName: partyName.trim() || 'ABC Traders',
+      partyName: partyName.trim(),
       partyPhone: partyPhone.trim(),
       partyAddress: partyAddress.trim(),
       partyGstin: partyGstin.trim(),
