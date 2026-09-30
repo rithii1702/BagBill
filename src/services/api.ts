@@ -1,8 +1,29 @@
 import { Invoice, Party, Product, BusinessSettings } from '../types';
 
-const API_BASE = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_URL)
-  ? `${import.meta.env.VITE_API_URL.replace(/\/$/, '')}/api`
-  : '/api';
+/**
+ * BagBill API Configuration:
+ * - Production: defaults to deployed Render backend (https://bagbill.onrender.com/api) or VITE_API_URL.
+ * - Local Development: uses Vite dev proxy (/api -> localhost:5000), or VITE_API_URL if specified.
+ */
+const PRODUCTION_API_URL = 'https://bagbill.onrender.com';
+
+const getApiBase = () => {
+  // If explicitly configured via environment variable (e.g. VITE_API_URL in .env, .env.production, or Vercel dashboard):
+  if (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_URL) {
+    const rawUrl = import.meta.env.VITE_API_URL.trim().replace(/\/+$/, '');
+    return rawUrl.endsWith('/api') ? rawUrl : `${rawUrl}/api`;
+  }
+
+  // When built/running in production, default directly to the deployed Render backend
+  if (typeof import.meta !== 'undefined' && import.meta.env?.PROD) {
+    return `${PRODUCTION_API_URL}/api`;
+  }
+
+  // In local development, use Vite proxy
+  return '/api';
+};
+
+const API_BASE = getApiBase();
 
 async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const url = `${API_BASE}${endpoint}`;

@@ -21,6 +21,7 @@ out/
 **/.env.*
 !**/.env.example
 !.env.example
+!.env.production
 
 # Temporary, Scratch & QA Test Files
 scratch/
